@@ -1,0 +1,8 @@
+Parameters
+Application parameters are available by calling the getParameters() method from the init() method, or any time after the init method has been called. 
+Threading
+JavaFX creates an application thread for running the application start method, processing input events, and running animation timelines. Creation of JavaFX Scene and Stage objects as well as modification of scene graph operations to live objects (those objects already attached to a scene) must be done on the JavaFX application thread.
+
+The Application constructor and init method are called on the launcher thread, not on the JavaFX Application Thread. This means that an application must not construct a Scene or a Stage in either the constructor or in the init method. An application may construct other JavaFX objects in the init method. 
+Example
+The following example will illustrate a simple JavaFX application

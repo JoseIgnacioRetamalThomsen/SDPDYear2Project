@@ -1,0 +1,2 @@
+You're getting an ArrayIndexOutOfBoundsException because your input string is just a dot, ie ".", which is an edge case that produces an empty array when split on dot; split(regex) removes all trailing blanks from the result, but since splitting a dot on a dot leaves only two blanks, after trailing blanks are removed you're left with an empty array.
+To avoid getting an ArrayIndexOutOfBoundsException for this edge case, use the overloaded version of split(regex, limit), which has a
