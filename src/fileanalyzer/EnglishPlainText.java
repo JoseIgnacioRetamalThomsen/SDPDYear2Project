@@ -21,10 +21,11 @@ import javafx.scene.control.Label;
 public class EnglishPlainText extends Archive implements Displayable, Searchable
 {
 
-	// 0 : number of lines, 1: extra charactes count (numbers,$,etc) , 2 total letters
+	// 0 : number of lines, 1: extra charactes count (numbers,$,etc) , 2 total
+	// letters
 	final char CHARACTERS[] =
 	{ '0', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-			'w', 'x', 'y', 'z', ' ', '1','2' };
+			'w', 'x', 'y', 'z', ' ', '1', '2' };
 
 	int charactersCount[] = new int[30];
 
@@ -73,7 +74,7 @@ public class EnglishPlainText extends Archive implements Displayable, Searchable
 			for (int i = 0; i < temporalLine.length(); i++)
 			{
 				temporalChar = Character.toLowerCase(temporalLine.charAt(i));
-				
+
 				isFound = false;
 				position = -1;
 
@@ -83,8 +84,9 @@ public class EnglishPlainText extends Archive implements Displayable, Searchable
 					if (temporalChar == this.CHARACTERS[position])
 					{
 						this.charactersCount[position]++;// add the character if found
-						
-						if(position>0 &&position<27)this.charactersCount[29]++;//count letter
+
+						if (position > 0 && position < 27)
+							this.charactersCount[29]++;// count letter
 						isFound = true;
 
 					} // if
@@ -135,12 +137,13 @@ public class EnglishPlainText extends Archive implements Displayable, Searchable
 			stringBuilder.append("Total letters: " + charactersCount[29] + "\n");
 			for (int i = 1; i < 27; i++)
 			{
-				//calculate percent of appearance of the letter
-				percentOfLetter = (charactersCount[i]/(double)charactersCount[29])*100 ;
-				stringBuilder.append(String.format("%-9c:%-15d %2c: %2.2f\n",CHARACTERS[i],charactersCount[i],'%',percentOfLetter));
+				// calculate percent of appearance of the letter
+				percentOfLetter = (charactersCount[i] / (double) charactersCount[29]) * 100;
+				stringBuilder.append(String.format("%-9c:%-15d %2c: %2.2f\n", CHARACTERS[i], charactersCount[i], '%',
+						percentOfLetter));
 			}
-			stringBuilder.append(String.format("%-9s:%-15d\n","space", charactersCount[27]));
-			stringBuilder.append(String.format("%-9s:%-15d","other" ,charactersCount[28]));
+			stringBuilder.append(String.format("%-9s:%-15d\n", "space", charactersCount[27]));
+			stringBuilder.append(String.format("%-9s:%-15d", "other", charactersCount[28]));
 		}
 
 		container.setText(stringBuilder.toString());
@@ -155,7 +158,7 @@ public class EnglishPlainText extends Archive implements Displayable, Searchable
 		String temporalLine;
 		StringBuilder result = new StringBuilder();
 		boolean notFound = true;
-		int howManyTimes=0;
+		int howManyTimes = 0;
 		ArrayList<Integer> position = new ArrayList<Integer>();
 		int line = 0, columFound;
 
@@ -164,7 +167,7 @@ public class EnglishPlainText extends Archive implements Displayable, Searchable
 		toSearch = toSearch.toLowerCase();
 		while (scanner.hasNext())
 		{
-			notFound=true;
+			notFound = true;
 			line++;
 			System.out.println(line);
 			temporalLine = scanner.nextLine().toLowerCase();
@@ -173,31 +176,27 @@ public class EnglishPlainText extends Archive implements Displayable, Searchable
 				if (temporalLine.contains(toSearch))
 				{
 					howManyTimes++;
-					System.out.println(position);
 					columFound = temporalLine.indexOf(toSearch);
-					System.out.println(columFound);
-					temporalLine = temporalLine.substring(columFound+1);
-					System.out.println(temporalLine);
-				}else
+					temporalLine = temporalLine.substring(columFound + 1);
+
+				} else
 				{
-					notFound=false;
+					notFound = false;
 				}
 			}
 		}
 		scanner.close();
 
-		
-		//print result to label
+		// print result to label
 		result.append(toSearch);
-		if(howManyTimes==0)
+		if (howManyTimes == 0)
 		{
 			result.append(" was not found.");
-		}else
+		} else
 		{
 			result.append(" was found " + howManyTimes);
 		}
 		containerReturn.setText(result.toString());
-			System.out.println(howManyTimes);
-		
+
 	}
 }
