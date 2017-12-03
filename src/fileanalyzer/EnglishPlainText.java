@@ -1,11 +1,14 @@
 //jose Retamal 
 package fileanalyzer;
 
+import java.awt.List;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 import templates.Archive;
 import templates.Displayable;
+import templates.Searchable;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 
@@ -15,30 +18,37 @@ import javafx.scene.control.Label;
  * 
  */
 
-public class EnglishPlainText extends Archive implements Displayable
+public class EnglishPlainText extends Archive implements Displayable, Searchable
 {
 
-	// 0 : number of lines, 1: charactes count (numbers,$,etc)
+	// 0 : number of lines, 1: extra charactes count (numbers,$,etc) , 2 total letters
 	final char CHARACTERS[] =
 	{ '0', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-			'w', 'x', 'y', 'z', ' ', '1' };
+			'w', 'x', 'y', 'z', ' ', '1','2' };
 
-	int charactersCount[] = new int[29];
+	int charactersCount[] = new int[30];
 
-	String extension[] =
-	{ "txt", "log" };
+	public EnglishPlainText()
+	{
+		super();
+		extension = new String[]
+		{ "txt", "log" };
+	}
 
-	
 	public EnglishPlainText(String file)
 	{
 		super(file);
-	
+
+		extension = new String[]
+		{ "txt", "log" };
 		// TODO Auto-generated constructor stub
 	}
 
 	public EnglishPlainText(File file)
 	{
 		super(file);
+		extension = new String[]
+		{ "txt", "log" };
 		// TODO Auto-generated constructor stub
 	}
 
@@ -54,80 +64,140 @@ public class EnglishPlainText extends Archive implements Displayable
 
 		scanner = new Scanner(new FileReader(this.getFileName()));
 
-			while (scanner.hasNext())
+		while (scanner.hasNext())
+		{
+			temporalLine = scanner.nextLine();
+
+			this.charactersCount[0]++;// count the line.
+
+			for (int i = 0; i < temporalLine.length(); i++)
 			{
-				temporalLine = scanner.nextLine();
+				temporalChar = Character.toLowerCase(temporalLine.charAt(i));
+				
+				isFound = false;
+				position = -1;
 
-				this.charactersCount[0]++;// count the line.
-
-				for (int i = 0; i < temporalLine.length(); i++)
+				while (!isFound && position < this.CHARACTERS.length - 1)
 				{
-					temporalChar = Character.toLowerCase(temporalLine.charAt(i));
-
-					isFound = false;
-					position = -1;
-
-					while (!isFound && position < this.CHARACTERS.length - 1)
+					position++;
+					if (temporalChar == this.CHARACTERS[position])
 					{
-						position++;
-						if (temporalChar == this.CHARACTERS[position])
-						{
-							this.charactersCount[position]++;// add the character if found
-							isFound = true;
+						this.charactersCount[position]++;// add the character if found
+						
+						if(position>0 &&position<27)this.charactersCount[29]++;//count letter
+						isFound = true;
 
-						} // if
+					} // if
 
-					} // end while from search
-					if (isFound == false)
-					{
-						this.charactersCount[28]++;// if not found it was not a letter so we add to other
-													// character count
-					}
+				} // end while from search
+				if (isFound == false)
+				{
+					this.charactersCount[28]++;// if not found it was not a letter so we add to other
+												// character count
 				}
 			}
-			scanner.close();
+		}
+		scanner.close();
 
 	}
+
+	StringBuilder stringBuilder;
 
 	@Override
 	public void displayArchive(Label container) throws Exception
 	{
 		Scanner scanner;
 
-		StringBuilder stringBuilder = new StringBuilder("");
+		stringBuilder = new StringBuilder("");
 
 		scanner = new Scanner(new FileReader(this.getFileName()));
 		while (scanner.hasNext())
 		{
-			
+
 			stringBuilder.append(scanner.nextLine() + "\n");
-			
+
 		}
 		container.setText(stringBuilder.toString());
 		scanner.close();
 	}
 
-	
-
 	@Override
 	public void displayCount(Label container) throws Exception
 	{
 		StringBuilder stringBuilder = new StringBuilder("");
-		if(charactersCount[0]==0)//mean no lines so nothing to display
+		double percentOfLetter;
+		if (charactersCount[0] == 0)// mean no lines so nothing to display
 		{
 			throw new Exception();
+		} else
+		{
+			stringBuilder.append("Lines: " + charactersCount[0] + "\n");
+			stringBuilder.append("Total letters: " + charactersCount[29] + "\n");
+			for (int i = 1; i < 27; i++)
+			{
+				//calculate percent of appearance of the letter
+				percentOfLetter = (charactersCount[i]/(double)charactersCount[29])*100 ;
+				stringBuilder.append(String.format("%-9c:%-15d %2c: %2.2f\n",CHARACTERS[i],charactersCount[i],'%',percentOfLetter));
+			}
+			stringBuilder.append(String.format("%-9s:%-15d\n","space", charactersCount[27]));
+			stringBuilder.append(String.format("%-9s:%-15d","other" ,charactersCount[28]));
+		}
+
+		container.setText(stringBuilder.toString());
+
+	}
+
+	// have to be call before displayArchive
+	@Override
+	public void searchOnFile(String toSearch, Label containerReturn) throws Exception
+	{
+		Scanner scanner;
+		String temporalLine;
+		StringBuilder result = new StringBuilder();
+		boolean notFound = true;
+		int howManyTimes=0;
+		ArrayList<Integer> position = new ArrayList<Integer>();
+		int line = 0, columFound;
+
+		scanner = new Scanner(new FileReader(this.getFileName()));
+
+		toSearch = toSearch.toLowerCase();
+		while (scanner.hasNext())
+		{
+			notFound=true;
+			line++;
+			System.out.println(line);
+			temporalLine = scanner.nextLine().toLowerCase();
+			while (notFound == true)
+			{
+				if (temporalLine.contains(toSearch))
+				{
+					howManyTimes++;
+					System.out.println(position);
+					columFound = temporalLine.indexOf(toSearch);
+					System.out.println(columFound);
+					temporalLine = temporalLine.substring(columFound+1);
+					System.out.println(temporalLine);
+				}else
+				{
+					notFound=false;
+				}
+			}
+		}
+		scanner.close();
+
+		
+		//print result to label
+		result.append(toSearch);
+		if(howManyTimes==0)
+		{
+			result.append(" was not found.");
 		}else
 		{
-			stringBuilder.append("Lines: " + charactersCount[0]+"\n");
-			for(int i=1;i<27;i++)
-			{
-				stringBuilder.append(CHARACTERS[i]+": " + charactersCount[i]+"\n");
-			}
-			stringBuilder.append("space: " + charactersCount[27]+"\n");
-			stringBuilder.append("other: " + charactersCount[28]+"\n");
+			result.append(" was found " + howManyTimes);
 		}
-		
-		container.setText(stringBuilder.toString());
+		containerReturn.setText(result.toString());
+			System.out.println(howManyTimes);
 		
 	}
 }

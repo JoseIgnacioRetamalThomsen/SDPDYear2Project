@@ -14,8 +14,18 @@ public abstract class Archive
 
 	private File file;
 	
+
+	public  String extension[] ;
+	
 	// constructors
 	//create with string
+	
+	public Archive()
+	{
+		this.fileName="no define";
+		this.file = null;
+	}
+	
 	public Archive(String fileName)
 	{
 		this.fileName = fileName;
@@ -47,7 +57,7 @@ public abstract class Archive
 
 	public String getFileNameNoExtension()
 	{
-		return this.fileName.split("\\")[0];
+		return this.file.getName();
 	}
 
 	public String getFileExtension()
@@ -55,6 +65,12 @@ public abstract class Archive
 		return this.fileName.split("\\.")[1];
 	}
 
+	public void setFile(File file)
+	{
+		this.file= new File(file.toString());
+		//this.setFileName(this.getFileNameNoExtension());
+	}
+	
 	//abstract methods
 	public abstract void analyzeArchive() throws Exception;
 	
@@ -79,7 +95,7 @@ public abstract class Archive
 
 		return isEquals;
 	}
-
+/*
 	public static void main(String[] args)
 	{
 		class Test extends Archive
@@ -96,6 +112,12 @@ public abstract class Archive
 		System.out.println(t.getFileNameNoExtension());
 		System.out.println(t.getFileExtension());
 
+	}*/
+
+	public File getFile()
+	{
+		// TODO Auto-generated method stub
+		return this.file;
 	}
 
 }

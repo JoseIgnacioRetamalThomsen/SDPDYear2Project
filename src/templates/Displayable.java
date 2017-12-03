@@ -11,5 +11,8 @@ public interface Displayable
 {
 	void displayArchive(Label container) throws Exception;
 	void displayCount(Label container) throws Exception;
+	void searchOnFile(String toSearch, Label containerReturn) throws Exception;
+	String getFileNameNoExtension();
+	
 	
 }

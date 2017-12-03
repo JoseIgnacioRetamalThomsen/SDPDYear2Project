@@ -10,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
@@ -17,6 +19,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.util.*;
 import java.io.*;
+
+import java.util.ArrayList;
+
+import javafx.concurrent.Task;
+
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 
@@ -31,46 +38,62 @@ public class MainWindows extends Application
 	static final String[] ARCHIVES_SUPPORTED =
 	{ "EnglishPlainText" };
 
-	List<Archive> filesImported;
+	List<Displayable> filesImported;
+	int filePosition = 0;
+
+	Label foundLabel;
 
 	public MainWindows()
 	{
+
 		// fill FilesImported
 		File importsFolder = new File(IMPORTS_FOLDER);
-		File filesToImport[];
 
-		filesImported = new ArrayList<Archive>();
+		filesImported = new ArrayList<Displayable>();
 
-		for (String archiveType : ARCHIVES_SUPPORTED)
-		{
-			File specificTypeArchiveFolder = new File(importsFolder, archiveType);
-
-			if (archiveType.equals("EnglishPlainText"))
+		
+			File filesToImport[];
+			for (String archiveType : ARCHIVES_SUPPORTED)
 			{
-				filesToImport = specificTypeArchiveFolder.listFiles();
-				if (filesToImport != null)
+				File specificTypeArchiveFolder = new File(importsFolder, archiveType);
+
+				if (archiveType.equals("EnglishPlainText"))
 				{
-					for (File file : filesToImport)
+					// return array with all files in folder
+					filesToImport = specificTypeArchiveFolder.listFiles();
+					if (filesToImport != null)
 					{
-						// add file to list
-						filesImported.add(new EnglishPlainText(file));
-					}
-				} // end for:filesToImport
-			} // end if archiveType
+						for (File file : filesToImport)
+						{
+							// add file to list
+							EnglishPlainText toADd = new EnglishPlainText(file);
+							try
+							{
+								toADd.analyzeArchive();
+								filesImported.add(toADd);
+							} catch (Exception e)
+							{
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 
-		} // end for:ARCHIVES_SUPPORTED
+						}
+					} // end for:filesToImport
+				} // end if archiveType
 
-		for (Archive a : filesImported)
-		{
-			System.out.println(a.toString());
-		}
+			} // end for:ARCHIVES_SUPPORTED
+
+	
 	}
+
+	VBox mainVB;
 
 	@Override
 	public void start(Stage stageOne)
 	{
+
 		// create main container
-		VBox mainVB = new VBox();
+		mainVB = new VBox();
 		// create Scene and set main container in scene
 		Scene scene = new Scene(mainVB, 900, 350);
 		// set title to stage
@@ -100,10 +123,37 @@ public class MainWindows extends Application
 		// add border pane to main
 		mainVB.getChildren().add(borderPane);
 
+		// top for actual file name
+		HBox topHB = new HBox();
+		Label topFileNameLabel = new Label();
+		topHB.getChildren().add(topFileNameLabel);
+		borderPane.setTop(topHB);
+		;
+
 		// VBox on left for show files
+		VBox mainLeftVB = new VBox();
 		VBox filesLeftVB = new VBox();
-		// add to borderPane
-		borderPane.setLeft(filesLeftVB);
+		// set size
+		filesLeftVB.setPrefSize(150, 150);
+		filesLeftVB.maxHeight(150);
+
+		// scroll panel for files
+		ScrollPane filesLeftSP = new ScrollPane(filesLeftVB);
+		// add to main VBox
+		mainLeftVB.getChildren().add(filesLeftSP);
+
+		// GUI for search for files
+		HBox searchLeftHBox = new HBox();
+		TextField searchTextFieldLeft = new TextField();
+		searchTextFieldLeft.setPromptText("Serch Files");
+		Button searchButtonLeft = new Button("SEARCH");
+
+		searchLeftHBox.getChildren().addAll(searchTextFieldLeft, searchButtonLeft);
+		mainLeftVB.getChildren().add(searchLeftHBox);
+
+		foundLabel = new Label();
+		mainLeftVB.getChildren().add(foundLabel);
+		borderPane.setLeft(mainLeftVB);
 
 		// mid HBox and VBox
 		HBox midAllHB = new HBox();
@@ -118,17 +168,56 @@ public class MainWindows extends Application
 		ScrollPane miLettersCountSP = new ScrollPane(midLettesCoundVB);
 		miLettersCountSP.setPrefWidth(200);
 		ScrollPane midTexSP = new ScrollPane(midTextVB);
-		midTexSP.setMaxWidth(800);
+		midTexSP.setMaxWidth(600);
+		midTexSP.setPrefWidth(600);
 		midAllHB.getChildren().addAll(miLettersCountSP, midTexSP);
 
+		// left for search on file
+		VBox rightSearchfileVB = new VBox();
+		HBox righSearchFileHB = new HBox();
+		TextField rightSearchOnFileTF = new TextField();
+		rightSearchOnFileTF.setPromptText("Serch in selected file");
+		Button rightSearchButton = new Button("Search");
+		righSearchFileHB.getChildren().addAll(rightSearchOnFileTF, rightSearchButton);
+		Label rightShowResult = new Label();
+
+		rightSearchfileVB.getChildren().addAll(righSearchFileHB, rightShowResult);
+		borderPane.setRight(rightSearchfileVB);
+
+		
 		borderPane.setCenter(midAllHB);
+
+		// inner class for set file in mid
+		class SetFile
+		{
+			public void setFileWithPosition(int position)
+			{
+				try
+				{
+					// ((EnglishPlainText)filesImported.get(position)).analyzeArchive();
+					filesImported.get(position).displayCount(midLetterCountLabel);
+					filesImported.get(position).displayArchive(midTextLabel);
+					filePosition = position;
+					// put file name in top
+					topFileNameLabel.setText(filesImported.get(position).getFileNameNoExtension());
+				} catch (Exception e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}// SetFile
+
+		// set file to help when is first time
+		SetFile setFile = new SetFile();
+		setFile.setFileWithPosition(0);
 
 		// fill filesLeftWith existing file from filesImported
 
-		for (Archive archive : filesImported)
+		for (Displayable archive : filesImported)
 		{
 			Label labelToAdd;
-			labelToAdd = new Label(archive.getFileName().replace('\\', '0').split("0")[2]);
+			labelToAdd = new Label(archive.getFileNameNoExtension());// getFileName().replace('\\', '0').split("0")[2]);
 			filesLeftVB.getChildren().add(labelToAdd);
 
 			// add box when mouse move over
@@ -158,123 +247,141 @@ public class MainWindows extends Application
 					try
 					{
 
-						((EnglishPlainText) archive).analyzeArchive();
-						((EnglishPlainText) archive).displayCount(midLetterCountLabel);
-						((EnglishPlainText) archive).displayArchive(midTextLabel);
+						// ((EnglishPlainText) archive).analyzeArchive();
+						// ((EnglishPlainText) archive).displayCount(midLetterCountLabel);
+						// ((EnglishPlainText) archive).displayArchive(midTextLabel);
+						int position = filesImported.indexOf(archive);
+						setFile.setFileWithPosition(position);
 
 					} catch (Exception e)
 					{
 					}
 				}
 			});
-		}//for:archive
-		
-		//import file
-		importFileMI.setOnAction(new EventHandler<ActionEvent>() 
+		} // for:archive
+
+		// import file
+
+		importFileMI.setOnAction(new EventHandler<ActionEvent>()
 		{
 			public void handle(ActionEvent t)
 			{
-				
-					Thread thread = new Thread(new Runnable() {
-						public void run()
+
+				ImportFile importFile = new ImportFile("EnglishPlainText", new File("this"), new Stage(), filesImported,
+						filesLeftVB, midLetterCountLabel, midTextLabel);
+				setFile.setFileWithPosition(importFile.getPosition());
+				/*
+				 * ImportFile test = new ImportFile("EnglishPlainText",new File("this"),new
+				 * Stage(),filesImported,filesLeftVB,midLetterCountLabel,midTextLabel); Thread
+				 * tt = new Thread(test);
+				 * 
+				 * tt.start();
+				 */
+
+			}// end handle
+		});// end impor file action event
+
+		// listener to search left button
+
+		searchButtonLeft.setOnAction((ActionEvent) ->
+		{
+			String textToSearch = searchTextFieldLeft.getText();
+			for (Displayable file : filesImported)
+			{
+				if (file.getFileNameNoExtension().equalsIgnoreCase(textToSearch))
+				{
+					foundLabel.setText(textToSearch);
+
+					foundLabel.setOnMouseMoved(new EventHandler<Event>()
+					{
+						public void handle(Event t)
 						{
-							FileChooser fileChooser = new FileChooser();
-							fileChooser.setTitle("Open Resource File");
-							fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("all","*.*"),new FileChooser.ExtensionFilter("txt","*.txt"),new FileChooser.ExtensionFilter("log","*.log"));
-							File file = fileChooser.showOpenDialog(stageOne);
-							
-							//get to folder
-							File archivesFole = new File(IMPORTS_FOLDER);
-							File englishPlainTextFolder = new File(IMPORTS_FOLDER,ARCHIVES_SUPPORTED[0]);
-							
-								System.out.println(file.getName());
-						
-							//create the file
-							File importedFile = new File(englishPlainTextFolder,file.getName());
-							//OpenFile(file);
-							//copy file to import folder
-							try
-							{
-								Scanner scanner = new Scanner(file);
-								PrintWriter print = new PrintWriter(new FileWriter(importedFile));
-								while(scanner.hasNext())
-								{
-									print.println(scanner.nextLine());
-								}
-								System.out.println("End");
-								print.close();
-								scanner.close();
-							}catch(IOException ex)
-							{
-								
-							}
-							//create Archive
-							Archive inportedArchive = new EnglishPlainText(file);
-							//analize
-							try
-							{
-								inportedArchive.analyzeArchive();
-							} catch (Exception e)
-							{
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							//add to list
-							filesImported.add(inportedArchive);
-							//add to GUI
-							Label tempLabel=new Label(file.getName());
-							filesLeftVB.getChildren().add(tempLabel);
-							//add listeners
-							tempLabel.setOnMouseMoved(new EventHandler<Event>()
-							{
-								public void handle(Event t)
-								{
 
-									tempLabel.setStyle("-fx-border-color:black");
-								}
-							});
-
-							tempLabel.setOnMouseExited(new EventHandler<Event>()
-							{
-								public void handle(Event t1)
-								{
-
-									tempLabel.setStyle("-fx-border-color:transparent");
-								}
-							});
-
-							tempLabel.setOnMouseClicked(new EventHandler<Event>()
-							{
-								public void handle(Event t)
-								{
-
-									try
-									{
-
-										((EnglishPlainText) inportedArchive).analyzeArchive();
-										((EnglishPlainText) inportedArchive).displayCount(midLetterCountLabel);
-										((EnglishPlainText) inportedArchive).displayArchive(midTextLabel);
-
-									} catch (Exception e)
-									{
-									}
-								}
-							});
-							
+							foundLabel.setStyle("-fx-border-color:black");
 						}
 					});
-					thread.run();
-				
+
+					foundLabel.setOnMouseExited(new EventHandler<Event>()
+					{
+						public void handle(Event t1)
+						{
+
+							foundLabel.setStyle("-fx-border-color:transparent");
+						}
+					});
+
+					foundLabel.setOnMouseClicked(new EventHandler<Event>()
+					{
+						public void handle(Event t)
+						{
+
+							try
+							{
+
+								// ((EnglishPlainText) archive).analyzeArchive();
+								((EnglishPlainText) file).displayCount(midLetterCountLabel);
+								((EnglishPlainText) file).displayArchive(midTextLabel);
+
+							} catch (Exception e)
+							{
+							}
+						}
+					});
+
+					break;
+				}
+			}
+		});
+		rightSearchButton.setOnAction((ActionEvent) ->
+		{
+			String textToSearch = rightSearchOnFileTF.getText();
+			try
+			{
+				filesImported.get(filePosition).searchOnFile(textToSearch,rightShowResult);
+			} catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		});
 
+
 		// show stage
 		stageOne.show();
+
 	}
 
 	public static void main(String[] args)
 	{
 		launch(args);
+
 	}
 
+}
+
+class test extends Application implements Runnable
+{
+	Stage st;
+
+	public test(Stage stage)
+	{
+		st = stage;
+	}
+
+	public void start(Stage s)
+	{
+		// create main container
+		VBox mainVB = new VBox();
+		// create Scene and set main container in scene
+		Scene scene = new Scene(mainVB, 900, 350);
+		// set title to stage
+		s.setTitle("File Analyzer");
+		// set scene to stage
+		s.setScene(scene);
+	}
+
+	public void run()
+	{
+		this.start(st);
+	}
 }
