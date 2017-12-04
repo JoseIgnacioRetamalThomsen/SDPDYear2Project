@@ -7,6 +7,11 @@ import java.util.Scanner;
 import javafx.scene.control.Label;
 import templates.Archive;
 import templates.Displayable;
+/*
+ * Jose Retamal FileAnalyzer
+ * This class will be use for count letters of an Spanish plain text file (txt,log)
+ * 
+ */
 
 public class SpanishPlainText extends Archive implements Displayable {
 
@@ -17,7 +22,10 @@ public class SpanishPlainText extends Archive implements Displayable {
 			'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', ' ', '1', '2', '3' };// total
 																						// 32
 
-	int charactersCount[] = new int[32];
+	/*
+	 * charracterCount[1] = a,charracterCount[27] = z
+	 */
+	public int charactersCount[] = new int[32];
 
 	StringBuilder stringBuilder;
 
@@ -155,31 +163,36 @@ public class SpanishPlainText extends Archive implements Displayable {
 					{
 						this.charactersCount[1]++;// add to a
 						this.charactersCount[31]++;// add to accents
+						isFound = true;
 					} else if (temporalChar == 'é')// add for extra leters with
 													// accent
 					{
 						this.charactersCount[5]++;// add to e
 						this.charactersCount[31]++;// add to accents
+						isFound = true;
 					} else if (temporalChar == 'í')// add for extra leters with
 													// accent
 					{
 						this.charactersCount[9]++;// add to e
 						this.charactersCount[31]++;// add to accents
+						isFound = true;
 					} else if (temporalChar == 'ó')// add for extra leters with
 													// accent
 					{
 						this.charactersCount[16]++;// add to o
 						this.charactersCount[31]++;// add to accents
+						isFound = true;
 					} else if (temporalChar == 'ú')// add for extra leters with
 													// accent
 					{
 						this.charactersCount[22]++;// add to o
 						this.charactersCount[31]++;// add to accents
+						isFound = true;
 					}
 
 				} // end while from search
 				if (isFound == false) {
-					this.charactersCount[28]++;// if not found it was not a
+					this.charactersCount[29]++;// if not found it was not a
 												// letter so we add to other
 												// character count
 				}

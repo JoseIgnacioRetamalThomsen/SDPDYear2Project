@@ -18,8 +18,15 @@ import templates.Displayable;
 import templates.FileNotSupportedException;
 import templates.MessageDialog;
 
+/*
+ * Jose Retaml SDPD project
+ * Class for import file using FileChosser from javaFX
+ * 
+ */
+
 public class ImportFile
 {
+	// class variables
 	static final String IMPORTS_FOLDER = "Archives";
 	static final String[] ARCHIVES_SUPPORTED =
 	{ "EnglishPlainText", "SpanishPlainText" };
@@ -39,17 +46,18 @@ public class ImportFile
 
 	int position;
 
+	// constructor where we import the file and added to Array list
 	public ImportFile(String typeString, File targetDirectory, Stage stage, java.util.List<Displayable> filesImported,
 			VBox filesLeftVB, Label midLetterCountLabel, Label midTextLabel)
 	{
-		int typeOffile = 0; // 0 for english 1 for sppanish
+		int typeOffile = 0; // 0 for English 1 for Spanish
 
 		boolean isFile = true;
 
 		this.filesLeftVB = filesLeftVB;
 		this.midLetterCountLabel = midLetterCountLabel;
 		this.midTextLabel = midTextLabel;
-		// argument init
+		// argument initialization
 		// create type of object to import
 		if (typeString.equals("EnglishPlainText"))
 		{
@@ -61,7 +69,6 @@ public class ImportFile
 			typeOffile = 1;
 		}
 
-	
 		this.stage = stage;
 
 		// create javafx fileChoooser
@@ -82,19 +89,17 @@ public class ImportFile
 
 		if (fileToImport == null)
 		{
-			
+
 		} else
 		{
-						// copy file
+			// copy file
 			File importedFile = null;
 
 			try
 			{
 				File archivesFole = new File(IMPORTS_FOLDER);
 				File englishPlainTextFolder = new File(archivesFole, ARCHIVES_SUPPORTED[typeOffile]);
-
 				importedFile = new File(englishPlainTextFolder, fileToImport.getName());
-
 				Scanner scanner = new Scanner(fileToImport);
 
 				if (scanner.hasNext() == false)
@@ -108,10 +113,9 @@ public class ImportFile
 					String line = scanner.nextLine();
 					if (line.length() > 10000)
 					{
-						
 						scanner.close();
 						print.close();
-						
+
 						throw new FileNotSupportedException();
 					}
 					print.println(line);
@@ -121,15 +125,12 @@ public class ImportFile
 				scanner.close();
 			} catch (FileNotFoundException e)
 			{
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				new MessageDialog("Error", "Not posible to open file, posible no permision to open.", stage);
 				isFile = false;
 
 			} catch (FileNotSupportedException e)
 			{
-				// TODO Auto-generated catch block
-
 				new MessageDialog("Error", "File not suport or empty.", stage);
 				isFile = false;
 
@@ -148,7 +149,7 @@ public class ImportFile
 				filesImported.add((Displayable) type);
 				// set position in the array for return
 				position = filesImported.size() - 1;
-							
+
 				try
 				{
 					type.analyzeArchive();
@@ -196,17 +197,11 @@ public class ImportFile
 
 			}
 		}
-	}// en constructor
+	}// end constructor
 
-	public static void main(String[] args)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
+	// return the position where the file was added
 	public int getPosition()
 	{
 		return this.position;
 	}
-
 }

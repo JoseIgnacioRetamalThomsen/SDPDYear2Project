@@ -8,79 +8,91 @@ import java.util.Scanner;
 
 import templates.Tasks;
 
-public class BackgroundTasks extends Tasks implements Runnable {
+/*
+ * Jose Retamal FileAnalyzer
+ * Class for report errors and how many time the program have ben use
+ * 
+ */
 
-	// 999999 : program open , 888888 expections
+public class BackgroundTasks extends Tasks implements Runnable
+{
+
+	// 999999 : program open , 888888 exceptions
 	int timesProgramOpen = 0;
 	int exceptionThrowed = 0;
 
-	//constructors
+	// constructors
 	public BackgroundTasks()
 	{
 		this.setTaskID("backTask");
 	}
-	
+
 	@Override
-	public void run() {
-		
+	public void run()
+	{
+
 		addProgramRunned();
 		countTimes();
 		printReport();
-		
+
 	}
 
-	private void addProgramRunned() {
+	private void addProgramRunned()
+	{
 		// print to eror file that the program have ben use
 		PrintWriter errFile;
 		String ERR_FILE_NAME = "erroFile.dat";
-		try {
+		try
+		{
 			errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
 			errFile.println("999999 program run");
 			errFile.close();
-		} catch (FileNotFoundException e1) {
+		} catch (FileNotFoundException e1)
+		{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
 
-	private void countTimes() {
+	private void countTimes()
+	{
 		Scanner errFile = null;
-		try {
+		try
+		{
 			errFile = new Scanner(new File("erroFile.dat"));
-		} catch (FileNotFoundException e) {
+		} catch (FileNotFoundException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		while (errFile.hasNext()) {
-			if (errFile.next().equals("999999")) {
+		while (errFile.hasNext())
+		{
+			if (errFile.next().equals("999999"))
+			{
 				timesProgramOpen++;
-			} else if (errFile.next().equals("999999")) {
+			} else if (errFile.next().equals("999999"))
+			{
 				exceptionThrowed++;
 			}
 
 		}
 	}
-	
+
 	private void printReport()
 	{
 		PrintWriter errFile;
 		String ERR_FILE_NAME = "reportFile.dat";
-		try {
+		try
+		{
 			errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
-			errFile.println("new report, program have run :" +timesProgramOpen+ " and have throw " + exceptionThrowed + " Exceptions" );
+			errFile.println("new report, program have run :" + timesProgramOpen + " and have throw " + exceptionThrowed
+					+ " Exceptions");
 			errFile.close();
-		} catch (FileNotFoundException e1) {
+		} catch (FileNotFoundException e1)
+		{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
-		
-	
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

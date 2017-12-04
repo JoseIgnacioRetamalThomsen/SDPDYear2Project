@@ -11,20 +11,23 @@ import javafx.scene.control.Label;
 
 /*
  * Jose Retamal FileAnalyzer
- * This class will be use for count leters of and english plain text file (txt,log)
+ * This class will be use for count letters of and Spanish plain text file (txt,log)
  * 
  */
 
 public class EnglishPlainText extends Archive implements Displayable
 {
 
-	// 0 : number of lines, 1: extra charactes count (numbers,$,etc) , 2 total
+	// 0 : number of lines, 1: extra characters count (numbers,$,etc) , 2 total
 	// letters
 	final char CHARACTERS[] =
 	{ '0', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
 			'w', 'x', 'y', 'z', ' ', '1', '2' };
 
-	int charactersCount[] = new int[30];
+	/*
+	 * charracterCount[1] = a,charracterCount[26] = z
+	 */
+	public int charactersCount[] = new int[30];
 
 	StringBuilder stringBuilder;
 	

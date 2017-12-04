@@ -1,0 +1,5 @@
+Simple text to 
+check if the counting is good
+should have many letters and also
+numbers like 123456789 
+that should be fine

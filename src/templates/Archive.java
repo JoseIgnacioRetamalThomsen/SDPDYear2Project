@@ -4,12 +4,13 @@ import java.io.File;
 
 /*
  * File Create 25/11/2017 Jose Retamal
+ * Parent Abstract class for use as template 
  * 
  */
 
 public abstract class Archive
 {
-
+	//class member
 	private String fileName;
 
 	private File file;
@@ -18,21 +19,17 @@ public abstract class Archive
 	public  String extension[] ;
 	
 	// constructors
-	//create with string
-	
-	public Archive()
+		public Archive()
 	{
 		this.fileName="no define";
 		this.file = null;
 	}
-	
-	public Archive(String fileName)
+		public Archive(String fileName)
 	{
 		this.fileName = fileName;
 		file = new File(fileName);
 	}
 
-	//create with file
 	public Archive(File file)
 	{
 		this.file = file;
@@ -60,10 +57,6 @@ public abstract class Archive
 		return this.file.getName();
 	}
 
-	public String getFileExtension()
-	{
-		return this.fileName.split("\\.")[1];
-	}
 
 	public void setFile(File file)
 	{
@@ -96,11 +89,8 @@ public abstract class Archive
 		return isEquals;
 	}
 
-
 	public File getFile()
 	{
-		// TODO Auto-generated method stub
-		return this.file;
+				return this.file;
 	}
-
 }

@@ -27,23 +27,22 @@ import javafx.geometry.Insets;
 /*
  * Jose Retaml SDPD project
  * Main Windows of the application
+ * GUI using javaFX
  */
 
 public class MainWindows extends Application
 {
 
+	// class variables
 	// constants
 	static final String IMPORTS_FOLDER = "Archives";
 	static final String[] ARCHIVES_SUPPORTED =
 	{ "EnglishPlainText", "SpanishPlainText" };
 
-	///****************ArryList declared polymorphically 
+	/// ****************ArryList declared polymorphically
 	List<Displayable> filesImported;
 	// variable for the actual file that is selected in GUI
 	int filePosition = 0;
-
-	
-	
 
 	// errFile = new PrintWriter(new FileOutputStream(new
 	// File("data\\savez\\udvhf.klf"),false));
@@ -94,15 +93,16 @@ public class MainWindows extends Application
 	private static Button leftSearchInFileButton;
 	private static Label leftSearchInFileResultLabel;
 
-	//label for show files name, many of this will be created
+	// label for show files name, many of this will be created
 	Label leftFileFoundLabel;
-	
+
+	// constructor
 	public MainWindows()
 	{
 
 		// fill FilesImported
 		File importsFolder = new File(IMPORTS_FOLDER);
-		//Initiate ArrayList of Displayable which hold all files analized.
+		// Initiate ArrayList of Displayable which hold all files analized.
 		filesImported = new ArrayList<Displayable>();
 
 		File filesToImportEnglish[];
@@ -119,16 +119,16 @@ public class MainWindows extends Application
 				{
 					for (File file : filesToImportEnglish)
 					{
-						// create 
+						// create
 						EnglishPlainText toADd = new EnglishPlainText(file);
 						try
 						{
 							toADd.analyzeArchive();
-							//add File type EnglishPlainText to ArrayList
+							// add File type EnglishPlainText to ArrayList
 							filesImported.add(toADd);
 						} catch (Exception e)
 						{
-							//print to error file
+							// print to error file
 							try
 							{
 								errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
@@ -137,7 +137,7 @@ public class MainWindows extends Application
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							errFile.println("888888 "+e.toString());
+							errFile.println("888888 " + e.toString());
 							errFile.close();
 						}
 
@@ -156,42 +156,39 @@ public class MainWindows extends Application
 						try
 						{
 							toADd.analyzeArchive();
-							//add File type SpanishPlainText to ArrayList
+							// add File type SpanishPlainText to ArrayList
 							filesImported.add(toADd);
 						} catch (Exception e)
 						{
-							//print to error file
+							// print to error file
 							try
 							{
+								// print to error file
 								errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
+								errFile.println("888888 " + e.toString());
+								errFile.close();
 							} catch (FileNotFoundException e1)
 							{
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							errFile.println("888888 "+e.toString());
-							errFile.close();
 						}
-
 					}
 				} // end for:filesToImport
 			}
 			// end if archiveType
-
 		} // end for:ARCHIVES_SUPPORTED
-
-		// create GUI
+			// create GUI
 		createGUI();
 	}
 
+	// method that create GUI call in the constructor
 	private void createGUI()
 	{
 		// Create main Containers
 		mainVB = new VBox();
 		borderPane = new BorderPane();
-
 		leftSearchHB = new HBox();
-
 		// menuBard
 		menuBar = new MenuBar();
 		// menus
@@ -212,7 +209,6 @@ public class MainWindows extends Application
 		menuHelp.getItems().addAll(helptMI, aboutMI);
 		// add all to menu bar
 		menuBar.getMenus().addAll(menuFile, menuImport, menuHelp);
-
 		// top
 		topHB = new HBox();// top container
 		topFileNameLabel = new Label();
@@ -222,7 +218,6 @@ public class MainWindows extends Application
 		topFileNameLabel.setScaleX(1.5);// style
 		topFileNameLabel.setScaleY(1.5);// style
 		topHB.setPadding(new Insets(5, 10, 5, 10));
-
 		// left
 		leftEverythingVB = new VBox();
 		leftFilesMenuVB = new VBox();
@@ -236,14 +231,14 @@ public class MainWindows extends Application
 		leftEverythingVB.setPadding(new Insets(0, 5, 0, 5));
 		leftFilesMenuVB.setPadding(new Insets(0, 5, 0, 5));
 		leftFileFoundLabel.setPadding(new Insets(0, 5, 0, 5));
-
 		leftSearchInFileHB = new HBox();
 		leftSearchInFileTF = new TextField();
 		leftSearchInFileButton = new Button("SEARCH");
 		leftSearchInFileHB.getChildren().addAll(leftSearchInFileTF, leftSearchInFileButton);
 		leftSearchInFileResultLabel = new Label();
-		leftEverythingVB.getChildren().addAll(leftFilesSP, leftSearchHB, leftFileFoundLabel);// to leftVB
-		leftEverythingVB.getChildren().addAll(leftSearchInFileHB, leftSearchInFileResultLabel);// to leftVB
+		leftEverythingVB.getChildren().addAll(leftFilesSP, leftSearchHB, leftFileFoundLabel);// to
+		leftEverythingVB.getChildren().addAll(leftSearchInFileHB, leftSearchInFileResultLabel);// to
+		// leftVB
 		borderPane.setLeft(leftEverythingVB);// to border pane
 		// style
 		leftFilesMenuVB.setPrefSize(150, 150);
@@ -251,7 +246,6 @@ public class MainWindows extends Application
 		leftSearchFilesTF.setPromptText("Serch Files");
 		leftSearchInFileTF.setPromptText("Serch in selected file");
 		leftSearchInFileResultLabel.setPadding(new Insets(0, 5, 0, 5));
-
 		// middle (center)
 		midAllHB = new HBox();
 		midLettesCoundVB = new VBox();
@@ -262,7 +256,8 @@ public class MainWindows extends Application
 		midTexSP = new ScrollPane(midTextVB);
 		midLettesCoundVB.getChildren().add(midLetterCountLabel);
 		midTextVB.getChildren().add(midTextLabel);
-		midAllHB.getChildren().addAll(miLettersCountSP, midTexSP); // add to midALLHB
+		midAllHB.getChildren().addAll(miLettersCountSP, midTexSP); // add to
+																	// midALLHB
 		borderPane.setCenter(midAllHB);// set on border
 		// style
 		miLettersCountSP.setPrefWidth(250);
@@ -274,9 +269,9 @@ public class MainWindows extends Application
 		mainVB.getChildren().add(menuBar);
 		// borderPane
 		mainVB.getChildren().add(borderPane);
+	}// end createGUI()
 
-	}
-
+	// application start method
 	@Override
 	public void start(Stage stageOne)
 	{
@@ -308,7 +303,7 @@ public class MainWindows extends Application
 					try
 					{
 						errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
-						errFile.println("888888 "+e.toString());
+						errFile.println("888888 " + e.toString());
 						errFile.close();
 					} catch (FileNotFoundException e1)
 					{
@@ -447,7 +442,7 @@ public class MainWindows extends Application
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
-							errFile.println("888888 "+e.toString());
+							errFile.println("888888 " + e.toString());
 							errFile.close();
 						}
 					});
@@ -473,23 +468,23 @@ public class MainWindows extends Application
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				errFile.println("888888 "+e.toString());
+				errFile.println("888888 " + e.toString());
 				errFile.close();
 			}
 		});
 
 	}// end start()
 
+	// main method from full app
 	public static void main(String[] args)
 	{
-		
-		//background task thread
+
+		// background task thread
 		Thread backGroundThread = new Thread(new BackgroundTasks());
 		backGroundThread.start();
-		//app main thread
+		// app main thread
 		launch(args);
-			
-		
+
 	}
 
 }

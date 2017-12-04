@@ -12,6 +12,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Insets; 
 
+/*
+ * Jose Retamal
+*  GUI class used to prompt messages to user
+*  
+ */
 
 public class MessageDialog extends Application
 {
