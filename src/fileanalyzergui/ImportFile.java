@@ -17,6 +17,7 @@ import templates.Archive;
 import templates.Displayable;
 import templates.FileNotSupportedException;
 import templates.MessageDialog;
+import fileanalyzergui.MainWindows.SetFile;;
 
 /*
  * Jose Retaml SDPD project
@@ -48,7 +49,7 @@ public class ImportFile
 
 	// constructor where we import the file and added to Array list
 	public ImportFile(String typeString, File targetDirectory, Stage stage, java.util.List<Displayable> filesImported,
-			VBox filesLeftVB, Label midLetterCountLabel, Label midTextLabel)
+			VBox filesLeftVB, Label midLetterCountLabel, Label midTextLabel, SetFile setFile)
 	{
 		int typeOffile = 0; // 0 for English 1 for Spanish
 
@@ -63,6 +64,8 @@ public class ImportFile
 		{
 			type = new EnglishPlainText();
 			typeOffile = 0;
+			// look if file exist
+
 		} else if (typeString.equals("SpanishPlainText"))
 		{
 			type = new SpanishPlainText();
@@ -89,7 +92,7 @@ public class ImportFile
 
 		if (fileToImport == null)
 		{
-
+			// nothing happens if null means close the windows with out choose
 		} else
 		{
 			// copy file
@@ -115,7 +118,7 @@ public class ImportFile
 					{
 						scanner.close();
 						print.close();
-
+						importedFile.delete();
 						throw new FileNotSupportedException();
 					}
 					print.println(line);
@@ -184,14 +187,26 @@ public class ImportFile
 				{
 					public void handle(Event t)
 					{
+						setFile.setFileWithPosition(position);
+						/*
 						try
 						{
-							((EnglishPlainText) type).displayCount(midLetterCountLabel);
-							((EnglishPlainText) type).displayArchive(midTextLabel);
+							if (typeString.equals("EnglishPlainText"))
+							{
+								//((EnglishPlainText) type).displayCount(midLetterCountLabel);
+								//((EnglishPlainText) type).displayArchive(midTextLabel);
+								setFile.setFileWithPosition(position);
+							} else if (typeString.equals("SpanishPlainText"))
+							{
+								//((SpanishPlainText) type).displayCount(midLetterCountLabel);
+								//((SpanishPlainText) type).displayArchive(midTextLabel);
+								setFile.setFileWithPosition(position);
+							}
 
 						} catch (Exception e)
 						{
-						}
+							System.out.println(e);
+						}*/
 					}
 				});
 

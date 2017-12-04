@@ -1,1 +1,15 @@
-Help here 0
+*This program is design for count number of letter on a plain text file.
+*Can count letter of text in English or Spanish, you have to which on.
+*Support any type of plain text file, if you trying to import some file
+ that is not .txt or .log just select *.*.
+*You can see the number of each letter and the % of appearance in the second column.
+*At the top is show the name of the current selected file, you can select another imported file
+ by clicking in the first column or searching for the file name and then click in the result
+ *If the file is not plain text you will not be able to import file, example word documents are not supported.
+ *The program support only 3000 characters for line, so if you try to import a file with more that 
+  3000 characters per line you will see a not supported file message.
+***How to analyze file***
+1) Select import from top menu.
+2) Select English or Spanish.
+3)Navigate for the desired file then click open
+

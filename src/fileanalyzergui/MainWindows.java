@@ -212,6 +212,7 @@ public class MainWindows extends Application
 		// top
 		topHB = new HBox();// top container
 		topFileNameLabel = new Label();
+		
 		topHB.getChildren().add(topFileNameLabel);
 		borderPane.setTop(topHB);// add to border pane
 		topHB.setAlignment(Pos.CENTER);// style
@@ -244,6 +245,7 @@ public class MainWindows extends Application
 		leftFilesMenuVB.setPrefSize(150, 150);
 		leftFilesMenuVB.maxHeight(150);
 		leftSearchFilesTF.setPromptText("Serch Files");
+		
 		leftSearchInFileTF.setPromptText("Serch in selected file");
 		leftSearchInFileResultLabel.setPadding(new Insets(0, 5, 0, 5));
 		// middle (center)
@@ -271,11 +273,42 @@ public class MainWindows extends Application
 		mainVB.getChildren().add(borderPane);
 	}// end createGUI()
 
+	//inner class for set file
+	class SetFile
+	{
+		public void setFileWithPosition(int position)
+		{
+			try
+			{
+				// ((EnglishPlainText)filesImported.get(position)).analyzeArchive();
+				filesImported.get(position).displayCount(midLetterCountLabel);
+				filesImported.get(position).displayArchive(midTextLabel);
+				filePosition = position;
+				// put file name in top
+				topFileNameLabel.setText(filesImported.get(position).getFileNameNoExtension());
+			} catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				try
+				{
+					errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
+					errFile.println("888888 " + e.toString());
+					errFile.close();
+				} catch (FileNotFoundException e1)
+				{
+
+				}
+
+			}
+		}
+	}// SetFile
+	
 	// application start method
 	@Override
 	public void start(Stage stageOne)
 	{
 
+		
 		// create Scene and set main container in scene
 		Scene scene = new Scene(mainVB, 950, 350);
 		// set title to stage
@@ -285,34 +318,7 @@ public class MainWindows extends Application
 		stageOne.show();
 
 		// inner class for set file in mid
-		class SetFile
-		{
-			public void setFileWithPosition(int position)
-			{
-				try
-				{
-					// ((EnglishPlainText)filesImported.get(position)).analyzeArchive();
-					filesImported.get(position).displayCount(midLetterCountLabel);
-					filesImported.get(position).displayArchive(midTextLabel);
-					filePosition = position;
-					// put file name in top
-					topFileNameLabel.setText(filesImported.get(position).getFileNameNoExtension());
-				} catch (Exception e)
-				{
-					// TODO Auto-generated catch block
-					try
-					{
-						errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
-						errFile.println("888888 " + e.toString());
-						errFile.close();
-					} catch (FileNotFoundException e1)
-					{
-
-					}
-
-				}
-			}
-		}// SetFile
+	
 
 		// set file to help when is first time
 		SetFile setFile = new SetFile();
@@ -372,7 +378,7 @@ public class MainWindows extends Application
 		importEnglishPlainTextFileMI.setOnAction((ActionEvent t) ->
 		{
 			ImportFile importFile = new ImportFile("EnglishPlainText", new File("this"), new Stage(), filesImported,
-					leftFilesMenuVB, midLetterCountLabel, midTextLabel);
+					leftFilesMenuVB, midLetterCountLabel, midTextLabel, setFile);
 			setFile.setFileWithPosition(importFile.getPosition());
 
 		});// end import file action event
@@ -380,7 +386,7 @@ public class MainWindows extends Application
 		importSpanishPlainTextFileMI.setOnAction((ActionEvent t) ->
 		{
 			ImportFile importFile = new ImportFile("SpanishPlainText", new File("this"), new Stage(), filesImported,
-					leftFilesMenuVB, midLetterCountLabel, midTextLabel);
+					leftFilesMenuVB, midLetterCountLabel, midTextLabel, setFile);
 			setFile.setFileWithPosition(importFile.getPosition());
 
 		});// end import file action event
@@ -390,7 +396,7 @@ public class MainWindows extends Application
 		{
 			new MessageDialog("Help",
 					"For help please look at the file help.txt that is all ready imported"
-							+ "\n you can search for the file in the \"Search for File\" search file"
+							+ "\n you can search for the file in the \"Search for File\" Field"
 							+ "\n and then click on it.",
 					new Stage());
 		});
@@ -479,6 +485,8 @@ public class MainWindows extends Application
 			}
 		});
 
+		//remove focus from textfield for show prompt text
+		topFileNameLabel.requestFocus();
 	}// end start()
 
 	// main method from full app
