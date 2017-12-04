@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 import java.util.*;
 import java.io.*;
 import java.util.ArrayList;
+
+import background.BackgroundTasks;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.geometry.Insets;
@@ -35,10 +37,13 @@ public class MainWindows extends Application
 	static final String[] ARCHIVES_SUPPORTED =
 	{ "EnglishPlainText", "SpanishPlainText" };
 
+	///****************ArryList declared polymorphically 
 	List<Displayable> filesImported;
+	// variable for the actual file that is selected in GUI
 	int filePosition = 0;
 
-	Label leftFileFoundLabel;
+	
+	
 
 	// errFile = new PrintWriter(new FileOutputStream(new
 	// File("data\\savez\\udvhf.klf"),false));
@@ -89,12 +94,15 @@ public class MainWindows extends Application
 	private static Button leftSearchInFileButton;
 	private static Label leftSearchInFileResultLabel;
 
+	//label for show files name, many of this will be created
+	Label leftFileFoundLabel;
+	
 	public MainWindows()
 	{
 
 		// fill FilesImported
 		File importsFolder = new File(IMPORTS_FOLDER);
-
+		//Initiate ArrayList of Displayable which hold all files analized.
 		filesImported = new ArrayList<Displayable>();
 
 		File filesToImportEnglish[];
@@ -111,16 +119,26 @@ public class MainWindows extends Application
 				{
 					for (File file : filesToImportEnglish)
 					{
-						// add file to list
+						// create 
 						EnglishPlainText toADd = new EnglishPlainText(file);
 						try
 						{
 							toADd.analyzeArchive();
+							//add File type EnglishPlainText to ArrayList
 							filesImported.add(toADd);
 						} catch (Exception e)
 						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							//print to error file
+							try
+							{
+								errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
+							} catch (FileNotFoundException e1)
+							{
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							errFile.println("888888 "+e.toString());
+							errFile.close();
 						}
 
 					}
@@ -133,16 +151,26 @@ public class MainWindows extends Application
 				{
 					for (File file : filesToImportSpanish)
 					{
-						// add file to list
+						// create
 						SpanishPlainText toADd = new SpanishPlainText(file);
 						try
 						{
 							toADd.analyzeArchive();
+							//add File type SpanishPlainText to ArrayList
 							filesImported.add(toADd);
 						} catch (Exception e)
 						{
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							//print to error file
+							try
+							{
+								errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
+							} catch (FileNotFoundException e1)
+							{
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							errFile.println("888888 "+e.toString());
+							errFile.close();
 						}
 
 					}
@@ -280,7 +308,7 @@ public class MainWindows extends Application
 					try
 					{
 						errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
-						errFile.print(e.toString());
+						errFile.println("888888 "+e.toString());
 						errFile.close();
 					} catch (FileNotFoundException e1)
 					{
@@ -330,7 +358,7 @@ public class MainWindows extends Application
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					errFile.print(e.toString());
+					errFile.println(e.toString());
 					errFile.close();
 				}
 			});
@@ -411,6 +439,16 @@ public class MainWindows extends Application
 
 						} catch (Exception e)
 						{
+							try
+							{
+								errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
+							} catch (FileNotFoundException e1)
+							{
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							errFile.println("888888 "+e.toString());
+							errFile.close();
 						}
 					});
 
@@ -435,7 +473,7 @@ public class MainWindows extends Application
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				errFile.print(e.toString());
+				errFile.println("888888 "+e.toString());
 				errFile.close();
 			}
 		});
@@ -444,39 +482,14 @@ public class MainWindows extends Application
 
 	public static void main(String[] args)
 	{
-		PrintWriter errFile;
-		String ERR_FILE_NAME = "erroFile.dat";
-		try
-		{
-			launch(args);
+		
+		//background task thread
+		Thread backGroundThread = new Thread(new BackgroundTasks());
+		backGroundThread.start();
+		//app main thread
+		launch(args);
 			
-		}catch (Exception e)
-		{
-			try
-			{
-				errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
-				errFile.print(e.toString());
-				errFile.close();
-			} catch (FileNotFoundException e1)
-			{
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-		} catch (Error error)
-		{
-			try
-			{
-				errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
-				errFile.print(error.toString());
-				errFile.close();
-			} catch (FileNotFoundException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
+		
 	}
 
 }

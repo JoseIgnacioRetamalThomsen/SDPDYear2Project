@@ -158,7 +158,7 @@ public class EnglishPlainText extends Archive implements Displayable
 		StringBuilder result = new StringBuilder();
 		boolean notFound = true;
 		int howManyTimes = 0;
-		int line = 0, columFound;
+		int columFound;
 
 		scanner = new Scanner(new FileReader(this.getFileName()));
 
@@ -166,8 +166,6 @@ public class EnglishPlainText extends Archive implements Displayable
 		while (scanner.hasNext())
 		{
 			notFound = true;
-			line++;
-			System.out.println(line);
 			temporalLine = scanner.nextLine().toLowerCase();
 			while (notFound == true)
 			{

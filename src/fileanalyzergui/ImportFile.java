@@ -61,7 +61,7 @@ public class ImportFile
 			typeOffile = 1;
 		}
 
-		// System.out.println(type.extension[0]);
+	
 		this.stage = stage;
 
 		// create javafx fileChoooser
@@ -82,12 +82,10 @@ public class ImportFile
 
 		if (fileToImport == null)
 		{
-			System.out.println("null");
+			
 		} else
 		{
-			System.out.println(fileToImport.toString());
-
-			// copy file
+						// copy file
 			File importedFile = null;
 
 			try
@@ -113,7 +111,7 @@ public class ImportFile
 						
 						scanner.close();
 						print.close();
-						System.out.println(importedFile.delete());
+						
 						throw new FileNotSupportedException();
 					}
 					print.println(line);
@@ -150,8 +148,7 @@ public class ImportFile
 				filesImported.add((Displayable) type);
 				// set position in the array for return
 				position = filesImported.size() - 1;
-				System.out.println(position);
-				System.out.println(type.getFile().toString());
+							
 				try
 				{
 					type.analyzeArchive();
