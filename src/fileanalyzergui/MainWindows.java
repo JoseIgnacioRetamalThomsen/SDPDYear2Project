@@ -410,6 +410,8 @@ public class MainWindows extends Application
 		leftSeachFilesButton.setOnAction((ActionEvent) ->
 		{
 			String textToSearch = leftSearchFilesTF.getText();
+			//search for file
+			boolean found = false;
 			for (Displayable file : filesImported)
 			{
 				if (file.getFileNameNoExtension().equalsIgnoreCase(textToSearch))
@@ -446,9 +448,13 @@ public class MainWindows extends Application
 							errFile.close();
 						}
 					});
-
+					found=true;
 					break;
 				}
+			}//for
+			if(found==false)
+			{
+				leftFileFoundLabel.setText("file not found");
 			}
 		});
 		// search in file listener

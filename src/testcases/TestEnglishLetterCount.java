@@ -15,7 +15,7 @@ public class TestEnglishLetterCount
 	@Test
 	public void testA()
 	{
-		EnglishPlainText testing = new EnglishPlainText(new File("testEnglish.txt"));
+		EnglishPlainText testing = new EnglishPlainText(new File("TestingFiles\\testEnglish.txt"));
 		try
 		{
 			testing.analyzeArchive();
@@ -29,7 +29,7 @@ public class TestEnglishLetterCount
 	@Test
 	public void testB()
 	{
-		EnglishPlainText testing = new EnglishPlainText(new File("testEnglish.txt"));
+		EnglishPlainText testing = new EnglishPlainText(new File("TestingFiles\\testEnglish.txt"));
 		try
 		{
 			testing.analyzeArchive();
@@ -43,7 +43,7 @@ public class TestEnglishLetterCount
 	@Test
 	public void testLines()
 	{
-		EnglishPlainText testing = new EnglishPlainText(new File("testEnglish.txt"));
+		EnglishPlainText testing = new EnglishPlainText(new File("TestingFiles\\testEnglish.txt"));
 		try
 		{
 			testing.analyzeArchive();
@@ -58,7 +58,7 @@ public class TestEnglishLetterCount
 	@Test
 	public void testOtherCharacters()
 	{
-		EnglishPlainText testing = new EnglishPlainText(new File("testEnglish.txt"));
+		EnglishPlainText testing = new EnglishPlainText(new File("TestingFiles\\testEnglish.txt"));
 		try
 		{
 			testing.analyzeArchive();

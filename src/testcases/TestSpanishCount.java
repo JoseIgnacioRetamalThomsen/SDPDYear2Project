@@ -19,7 +19,7 @@ public class TestSpanishCount
 	@Test
 	public void testA()
 	{
-		SpanishPlainText testing = new SpanishPlainText(new File("testSpanish.txt"));
+		SpanishPlainText testing = new SpanishPlainText(new File("TestingFiles\\testSpanish.txt"));
 		try
 		{
 			testing.analyzeArchive();
@@ -33,7 +33,7 @@ public class TestSpanishCount
 	@Test
 	public void testB()
 	{
-		SpanishPlainText testing = new SpanishPlainText(new File("testSpanish.txt"));
+		SpanishPlainText testing = new SpanishPlainText(new File("TestingFiles\\testSpanish.txt"));
 		try
 		{
 			testing.analyzeArchive();
@@ -47,7 +47,7 @@ public class TestSpanishCount
 	@Test
 	public void testLines()
 	{
-		SpanishPlainText testing = new SpanishPlainText(new File("testSpanish.txt"));
+		SpanishPlainText testing = new SpanishPlainText(new File("TestingFiles\\testSpanish.txt"));
 		try
 		{
 			testing.analyzeArchive();
@@ -62,7 +62,7 @@ public class TestSpanishCount
 	@Test
 	public void testOtherCharacters()
 	{
-		SpanishPlainText testing = new SpanishPlainText(new File("testSpanish.txt"));
+		SpanishPlainText testing = new SpanishPlainText(new File("TestingFiles\\testSpanish.txt"));
 		try
 		{
 			testing.analyzeArchive();
