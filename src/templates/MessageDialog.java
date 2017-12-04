@@ -1,30 +1,17 @@
 package templates;
 
-
-import templates.*;
-import fileanalyzer.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import java.util.*;
-import java.io.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
+import javafx.geometry.Insets; 
 
-import javafx.application.Application;
-import javafx.stage.Stage;
 
 public class MessageDialog extends Application
 {
@@ -43,6 +30,7 @@ public class MessageDialog extends Application
 		
 		messageLabel = new Label(message);
 		okButton = new Button("OK");
+		
 	
 		stage.initModality(Modality.WINDOW_MODAL);
 		this.start(stage);
@@ -52,9 +40,18 @@ public class MessageDialog extends Application
 	public void start(Stage stage1) 
 	{
 		VBox rootVB = new VBox();
-		Scene scene = new Scene(rootVB, 400, 100);
+		HBox labelHB = new HBox();
+		HBox buttonHB = new HBox();
+		labelHB.getChildren().add(messageLabel);
+		buttonHB.getChildren().add(okButton);
+		//style
+		labelHB.setAlignment(Pos.CENTER);
+		buttonHB.setAlignment(Pos.CENTER);
+		labelHB.setPadding(new Insets(5,10,5,10));
 		
-		rootVB.getChildren().addAll(messageLabel,okButton);
+		Scene scene = new Scene(rootVB, 450, 100);
+		
+		rootVB.getChildren().addAll(labelHB,buttonHB);
 		
 		stage1.setTitle(title);
 		// set scene to stage

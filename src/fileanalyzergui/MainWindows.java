@@ -4,8 +4,6 @@ import templates.*;
 import fileanalyzer.*;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
@@ -16,35 +14,36 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.util.*;
 import java.io.*;
-
 import java.util.ArrayList;
-
-import javafx.concurrent.Task;
-
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.geometry.Insets;
 
 /*
  * Jose Retaml SDPD project
  * Main Windows of the application
  */
 
-public class MainWindows extends Application implements EventHandler<ActionEvent>
+public class MainWindows extends Application
 {
 
 	// constants
 	static final String IMPORTS_FOLDER = "Archives";
 	static final String[] ARCHIVES_SUPPORTED =
-	{ "EnglishPlainText" };
+	{ "EnglishPlainText", "SpanishPlainText" };
 
 	List<Displayable> filesImported;
 	int filePosition = 0;
 
 	Label leftFileFoundLabel;
+
+	// errFile = new PrintWriter(new FileOutputStream(new
+	// File("data\\savez\\udvhf.klf"),false));
+	PrintWriter errFile;
+	String ERR_FILE_NAME = "erroFile.dat";
 
 	// GUI static variables
 	// containers
@@ -69,7 +68,9 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 	private static MenuItem exitMI;
 	// import
 	private static MenuItem importEnglishPlainTextFileMI;
+	private static MenuItem importSpanishPlainTextFileMI;
 	// help
+	private static MenuItem helptMI;
 	private static MenuItem aboutMI;
 
 	private static Label topFileNameLabel;
@@ -96,18 +97,19 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 
 		filesImported = new ArrayList<Displayable>();
 
-		File filesToImport[];
+		File filesToImportEnglish[];
+		File filesToImportSpanish[];
 		for (String archiveType : ARCHIVES_SUPPORTED)
 		{
 			File specificTypeArchiveFolder = new File(importsFolder, archiveType);
-
+			// select English or Spanish
 			if (archiveType.equals("EnglishPlainText"))
 			{
 				// return array with all files in folder
-				filesToImport = specificTypeArchiveFolder.listFiles();
-				if (filesToImport != null)
+				filesToImportEnglish = specificTypeArchiveFolder.listFiles();
+				if (filesToImportEnglish != null)
 				{
-					for (File file : filesToImport)
+					for (File file : filesToImportEnglish)
 					{
 						// add file to list
 						EnglishPlainText toADd = new EnglishPlainText(file);
@@ -123,7 +125,30 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 
 					}
 				} // end for:filesToImport
-			} // end if archiveType
+			} else if (archiveType.equals("SpanishPlainText"))
+			{
+				// return array with all files in folder
+				filesToImportSpanish = specificTypeArchiveFolder.listFiles();
+				if (filesToImportSpanish != null)
+				{
+					for (File file : filesToImportSpanish)
+					{
+						// add file to list
+						SpanishPlainText toADd = new SpanishPlainText(file);
+						try
+						{
+							toADd.analyzeArchive();
+							filesImported.add(toADd);
+						} catch (Exception e)
+						{
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					}
+				} // end for:filesToImport
+			}
+			// end if archiveType
 
 		} // end for:ARCHIVES_SUPPORTED
 
@@ -151,10 +176,12 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 		menuFile.getItems().addAll(exitMI);
 		// import
 		importEnglishPlainTextFileMI = new MenuItem("English PLain Text File");
-		menuImport.getItems().addAll(importEnglishPlainTextFileMI);
+		importSpanishPlainTextFileMI = new MenuItem("Spanish PLain Text File");
+		menuImport.getItems().addAll(importEnglishPlainTextFileMI, importSpanishPlainTextFileMI);
 		// help
+		helptMI = new MenuItem("help");
 		aboutMI = new MenuItem("about");
-		menuHelp.getItems().addAll(aboutMI);
+		menuHelp.getItems().addAll(helptMI, aboutMI);
 		// add all to menu bar
 		menuBar.getMenus().addAll(menuFile, menuImport, menuHelp);
 
@@ -166,6 +193,7 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 		topHB.setAlignment(Pos.CENTER);// style
 		topFileNameLabel.setScaleX(1.5);// style
 		topFileNameLabel.setScaleY(1.5);// style
+		topHB.setPadding(new Insets(5, 10, 5, 10));
 
 		// left
 		leftEverythingVB = new VBox();
@@ -176,8 +204,11 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 		leftSeachFilesButton = new Button("SEARCH");
 		leftSearchHB.getChildren().addAll(leftSearchFilesTF, leftSeachFilesButton);
 		leftFileFoundLabel = new Label();
-		new VBox();
-		
+		// style
+		leftEverythingVB.setPadding(new Insets(0, 5, 0, 5));
+		leftFilesMenuVB.setPadding(new Insets(0, 5, 0, 5));
+		leftFileFoundLabel.setPadding(new Insets(0, 5, 0, 5));
+
 		leftSearchInFileHB = new HBox();
 		leftSearchInFileTF = new TextField();
 		leftSearchInFileButton = new Button("SEARCH");
@@ -191,6 +222,7 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 		leftFilesMenuVB.maxHeight(150);
 		leftSearchFilesTF.setPromptText("Serch Files");
 		leftSearchInFileTF.setPromptText("Serch in selected file");
+		leftSearchInFileResultLabel.setPadding(new Insets(0, 5, 0, 5));
 
 		// middle (center)
 		midAllHB = new HBox();
@@ -205,10 +237,10 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 		midAllHB.getChildren().addAll(miLettersCountSP, midTexSP); // add to midALLHB
 		borderPane.setCenter(midAllHB);// set on border
 		// style
-		miLettersCountSP.setPrefWidth(200);
-		midTexSP.setMaxWidth(600);
-		midTexSP.setPrefWidth(600);
-
+		miLettersCountSP.setPrefWidth(250);
+		midTexSP.setPrefWidth(550);
+		midLetterCountLabel.setPadding(new Insets(0, 5, 0, 5));
+		midTextLabel.setPadding(new Insets(0, 5, 0, 5));
 		// add to mainVB
 		// MenuBar
 		mainVB.getChildren().add(menuBar);
@@ -222,7 +254,7 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 	{
 
 		// create Scene and set main container in scene
-		Scene scene = new Scene(mainVB, 900, 350);
+		Scene scene = new Scene(mainVB, 950, 350);
 		// set title to stage
 		stageOne.setTitle("File Analyzer");
 		// set scene to stage
@@ -245,7 +277,16 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 				} catch (Exception e)
 				{
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					try
+					{
+						errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
+						errFile.print(e.toString());
+						errFile.close();
+					} catch (FileNotFoundException e1)
+					{
+
+					}
+
 				}
 			}
 		}// SetFile
@@ -259,6 +300,7 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 		{
 			Label leftFileLabel;
 			leftFileLabel = new Label(archive.getFileNameNoExtension());
+			leftFileLabel.setPadding(new Insets(2, 5, 2, 5));// style
 			leftFilesMenuVB.getChildren().add(leftFileLabel);
 
 			// add box when mouse move over
@@ -280,12 +322,30 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 					setFile.setFileWithPosition(position);
 				} catch (Exception e)
 				{
+					try
+					{
+						errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
+					} catch (FileNotFoundException e1)
+					{
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					errFile.print(e.toString());
+					errFile.close();
 				}
 			});
 		} // for:archive
 
 		// listeners
 		// MenuBar listeners
+		// file
+		// exit
+		exitMI.setOnAction((ActionEvent t) ->
+		{
+			System.exit(0);
+
+		});
+		// import English
 		importEnglishPlainTextFileMI.setOnAction((ActionEvent t) ->
 		{
 			ImportFile importFile = new ImportFile("EnglishPlainText", new File("this"), new Stage(), filesImported,
@@ -293,6 +353,35 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 			setFile.setFileWithPosition(importFile.getPosition());
 
 		});// end import file action event
+			// import Spanish
+		importSpanishPlainTextFileMI.setOnAction((ActionEvent t) ->
+		{
+			ImportFile importFile = new ImportFile("SpanishPlainText", new File("this"), new Stage(), filesImported,
+					leftFilesMenuVB, midLetterCountLabel, midTextLabel);
+			setFile.setFileWithPosition(importFile.getPosition());
+
+		});// end import file action event
+			// help
+			// help
+		helptMI.setOnAction((ActionEvent t) ->
+		{
+			new MessageDialog("Help",
+					"For help please look at the file help.txt that is all ready imported"
+							+ "\n you can search for the file in the \"Search for File\" search file"
+							+ "\n and then click on it.",
+					new Stage());
+		});
+		// about
+		aboutMI.setOnAction((ActionEvent t) ->
+		{
+			new MessageDialog("About this Program",
+					"This program was develop by Jose Retamal "
+							+ "\n As a final project for the Software Design and Program Develop  Courser   "
+							+ "\nLecturer Naomi Hurley " + "\n GMIT Galway 2017.",
+					new Stage());
+		});
+
+		// end menu bard
 
 		// search for file listener
 		leftSeachFilesButton.setOnAction((ActionEvent) ->
@@ -338,49 +427,56 @@ public class MainWindows extends Application implements EventHandler<ActionEvent
 				filesImported.get(filePosition).searchOnFile(textToSearch, leftSearchInFileResultLabel);
 			} catch (Exception e)
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				try
+				{
+					errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
+				} catch (FileNotFoundException e1)
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				errFile.print(e.toString());
+				errFile.close();
 			}
 		});
+
 	}// end start()
 
 	public static void main(String[] args)
 	{
-		launch(args);
+		PrintWriter errFile;
+		String ERR_FILE_NAME = "erroFile.dat";
+		try
+		{
+			launch(args);
+			
+		}catch (Exception e)
+		{
+			try
+			{
+				errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
+				errFile.print(e.toString());
+				errFile.close();
+			} catch (FileNotFoundException e1)
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+		} catch (Error error)
+		{
+			try
+			{
+				errFile = new PrintWriter(new FileOutputStream(new File(ERR_FILE_NAME), true));
+				errFile.print(error.toString());
+				errFile.close();
+			} catch (FileNotFoundException e)
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
+		}
 	}
 
-	@Override
-	public void handle(ActionEvent arg0)
-	{
-
-	}
-
-}
-
-class test extends Application implements Runnable
-{
-	Stage st;
-
-	public test(Stage stage)
-	{
-		st = stage;
-	}
-
-	public void start(Stage s)
-	{
-		// create main container
-		VBox mainVB = new VBox();
-		// create Scene and set main container in scene
-		Scene scene = new Scene(mainVB, 900, 350);
-		// set title to stage
-		s.setTitle("File Analyzer");
-		// set scene to stage
-		s.setScene(scene);
-	}
-
-	public void run()
-	{
-		this.start(st);
-	}
 }

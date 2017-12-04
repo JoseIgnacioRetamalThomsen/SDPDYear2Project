@@ -1,5 +1,5 @@
 package templates;
-import javafx.scene.layout.VBox;
+
 import javafx.scene.control.Label;
 
 /*

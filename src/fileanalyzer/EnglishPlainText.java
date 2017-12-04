@@ -1,15 +1,12 @@
 //jose Retamal 
 package fileanalyzer;
 
-import java.awt.List;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.Scanner;
 import templates.Archive;
 import templates.Displayable;
-import templates.Searchable;
-import javafx.scene.layout.VBox;
+
 import javafx.scene.control.Label;
 
 /*
@@ -18,7 +15,7 @@ import javafx.scene.control.Label;
  * 
  */
 
-public class EnglishPlainText extends Archive implements Displayable, Searchable
+public class EnglishPlainText extends Archive implements Displayable
 {
 
 	// 0 : number of lines, 1: extra charactes count (numbers,$,etc) , 2 total
@@ -29,6 +26,8 @@ public class EnglishPlainText extends Archive implements Displayable, Searchable
 
 	int charactersCount[] = new int[30];
 
+	StringBuilder stringBuilder;
+	
 	public EnglishPlainText()
 	{
 		super();
@@ -78,7 +77,7 @@ public class EnglishPlainText extends Archive implements Displayable, Searchable
 				isFound = false;
 				position = -1;
 
-				while (!isFound && position < this.CHARACTERS.length - 1)
+				while (!isFound && position < this.CHARACTERS.length - 2)
 				{
 					position++;
 					if (temporalChar == this.CHARACTERS[position])
@@ -101,9 +100,9 @@ public class EnglishPlainText extends Archive implements Displayable, Searchable
 		}
 		scanner.close();
 
-	}
+	}//Analyze file
 
-	StringBuilder stringBuilder;
+	
 
 	@Override
 	public void displayArchive(Label container) throws Exception
@@ -159,7 +158,6 @@ public class EnglishPlainText extends Archive implements Displayable, Searchable
 		StringBuilder result = new StringBuilder();
 		boolean notFound = true;
 		int howManyTimes = 0;
-		ArrayList<Integer> position = new ArrayList<Integer>();
 		int line = 0, columFound;
 
 		scanner = new Scanner(new FileReader(this.getFileName()));

@@ -95,24 +95,7 @@ public abstract class Archive
 
 		return isEquals;
 	}
-/*
-	public static void main(String[] args)
-	{
-		class Test extends Archive
-		{
-			public Test(String n)
-			{
-				super(n);
-			}
-			public  void analyzeArchive() {}
-			
-		}
-		Test t = new Test("myFile.txt");
 
-		System.out.println(t.getFileNameNoExtension());
-		System.out.println(t.getFileExtension());
-
-	}*/
 
 	public File getFile()
 	{
